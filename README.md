@@ -25,10 +25,10 @@ below) and a speedlift output which can be passed to a later iteration
 of rate_mapper to decrease computation time (see note 1 below)
 
 ## main input options include:
-###'pos' 
+### 'pos' 
 (Nx2) Numeric matrix, the position data x,y coordinates. Units are in mm
 
-###'spk' 
+### 'spk' 
 (Nx2) Numeric matrix, the spike data x,y coordinates. Units are in mm
 
 ## rmset optional fields include:
