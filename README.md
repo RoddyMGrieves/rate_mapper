@@ -6,7 +6,7 @@ temporal KSDE, adaptive smoothing and adaptive binning. The advantages
 and disadvantages of these approaches have been described in:
 
 Grieves (2023) Estimating neuronal firing density: a quantitative analysis 
-of firing rate map algorithms. PLoS Comp. Bio.
+of firing rate map algorithms. (under review)
 
 # Basic syntax
 ```rmap = rate_mapper(pos,spk);```  
