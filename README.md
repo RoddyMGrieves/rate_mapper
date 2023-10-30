@@ -9,15 +9,15 @@ Grieves (2023) Estimating neuronal firing density: a quantitative analysis
 of firing rate map algorithms. PLoS Comp. Bio.
 
 # Basic syntax
-rmap = rate_mapper(pos,spk) 
-maps the positions in pos to a 2D dwellmap and the spikes in spk to a 2D spikemap, 
-computes a 2D firing rate map
+rmap = rate_mapper(pos,spk)
+  Maps the positions in pos to a 2D dwellmap and the spikes in spk to a 2D spikemap, 
+  computes a 2D firing rate map
 
-rmap = rate_mapper(pos,spk,rmset) 
-uses additional settings specified by an rmset structure (see below)
+rmap = rate_mapper(pos,spk,rmset)
+  Uses additional settings specified by an rmset structure (see below)
 
-rmap = rate_mapper(pos,spk,[],speedlift) 
-uses a speedlift input to decrease computation time (see note 1 below)
+rmap = rate_mapper(pos,spk,[],speedlift)
+  Uses a speedlift input to decrease computation time (see note 1 below)
 
 [rmap,dmap,smap,rmset,speedlift] = rate_mapper(pos,spk,[],speedlift)
 also returns the dwell time map in 'dmap', the spike map in 'smap',
