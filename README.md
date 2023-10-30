@@ -9,17 +9,17 @@ Grieves (2023) Estimating neuronal firing density: a quantitative analysis
 of firing rate map algorithms. PLoS Comp. Bio.
 
 # Basic syntax
-```rmap = rate_mapper(pos,spk)```
+```rmap = rate_mapper(pos,spk);```  
 Maps the positions in pos to a 2D dwellmap and the spikes in spk to a 2D spikemap, 
 computes a 2D firing rate map
 
-```rmap = rate_mapper(pos,spk,rmset)```
+```rmap = rate_mapper(pos,spk,rmset);```  
 Uses additional settings specified by an rmset structure (see below)
 
-```rmap = rate_mapper(pos,spk,[],speedlift)```
+```rmap = rate_mapper(pos,spk,[],speedlift);```  
 Uses a speedlift input to decrease computation time (see note 1 below)
 
-[rmap,dmap,smap,rmset,speedlift] = rate_mapper(pos,spk,[],speedlift)
+```[rmap,dmap,smap,rmset,speedlift] = rate_mapper(pos,spk,[],speedlift);```  
 also returns the dwell time map in 'dmap', the spike map in 'smap',
 the settings used to generate the map (and some additional info, see
 below) and a speedlift output which can be passed to a later iteration
@@ -60,13 +60,13 @@ Default value is 4mm.
 Scalar, positive integer that specifies the size of the smoothing kernel, units 
 are in mm.
 
-Default is 2*ceil(2*(rmset.ssigma./rmset.binsize))+1
+Default is ```2*ceil(2*(rmset.ssigma./rmset.binsize))+1```
 
 ### 'maplims'
 1x4 vector (xmin ymin xmax ymax) specifies the desired outer boundaries of the rate 
 map. Coordinates shouldbe in the pos and spk reference frame and in mm.
 
-Default value is: [ min(pos) max(pos) ]
+Default value is: ```[min(pos) max(pos)]```
 
 ### 'padding'
 Scalar, positive integer that specifies the amount of space or padding to add around 
@@ -101,7 +101,7 @@ Default value is 50Hz.
 Scalar, positive integer that specifies the smoothing method to be used. 1 = smooth 
 spikemap & dwellmap before division using imgaussfilt, 2 = smooth after division using 
 imfilter and nanconv, 3 = no smoothing, 4 = smooth with an average boxcar of size 
-2*floor(rmset.ssigma/2)+1
+```2*floor(rmset.ssigma/2)+1```
 
 Default value is 1 (smooth before)
 
@@ -145,7 +145,7 @@ of the rate map)
 
 ### 'points_to_map'
 Anonymous function that can be used to convert x,y coordinates to match the maps. Example:
-mapXY = rmset.points_to_map(XY);
+```mapXY = rmset.points_to_map(XY);```
 where XY is an Nx2 set of input coordinates in the same reference frame as pos and spk, 
 mapXY are the coordinates converted to the firing rate map reference frame. See example below.
 
