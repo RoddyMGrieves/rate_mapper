@@ -33,13 +33,12 @@ function [ratemap,dwellmap,spikemap,rmset,speedlift] = rate_mapper(pos,spk,rmset
 %                       specifies the mapping method to be used on position
 %                       and spike data. 
 %
-%                       'histogram'
+%                       Default value is 'histogram'.
+% 
 %                       Spike and position data are binned seperately using
 %                       the bivariate histogram method (histcounts2). 
 %                       Smoothing is performed using imgaussfilt or nanconv
 %                       depending on the value of rmset.smethod
-%
-%                       Default value is 'histogram'.
 %
 %   'binsize'       -   Scalar, positive integer that specifies the pixel 
 %                       or bin size to use for mapping, units are in mm.
@@ -362,6 +361,7 @@ function [ratemap,dwellmap,spikemap,rmset,speedlift] = rate_mapper(pos,spk,rmset
 % The original papers did not include any smoothing, but these histograms are generally smoothed nowadays before the division occurs. This smoothing 
 % is usually Gaussian but may also be an average/uniform boxcar kernel. Histograms are extremely fast to compute and combined with smoothing provide
 % suprisingly accurate maps.
+
             % generate spikemap and dwellmap if necessary
             % coordinates are backwards so the resulting map has the correct orientation in IJ
             spikemap = histcounts2(spy,spx,yvec,xvec);
@@ -428,6 +428,7 @@ function [ratemap,dwellmap,spikemap,rmset,speedlift] = rate_mapper(pos,spk,rmset
 % offset bins (i.e. the bin edges are moved with respect to the data by a fraction of 1 bin length). The result is a histogram with a much lower MISE than a single histogram.
 % In practice the result should not need to be smoothed and an added benefit is that the resulting histograms still sum to the number of data points.
 % In reality we don't make multiple histograms but instead make one very fine scale one and then use a special weighting kernel to average across them.
+
             rmset.ash = max([ceil(rmset.ash) 1]);
             h = rmset.binsize;
             m = rmset.ash;
@@ -610,7 +611,7 @@ function [ratemap,dwellmap,spikemap,rmset,speedlift] = rate_mapper(pos,spk,rmset
 % where a is a constant, r is the radius of the circle in pixels, n is the number of 50-msec-long occupancy samples lying within the circle, and s is the
 % total number of spikes contained in those occupancy samples. Once this criterion was met, the firing rate assigned to the point was equal to s/n.
 % For this experiment, a was set to the value 1000.
-            
+
             % generate spikemap and dwellmap if necessary
             max_bin_distance = rmset.maxdist ./ rmset.binsize;
             kvect = sort(unique([ceil(linspace(1,max_bin_distance,rmset.steps)) ceil(rmset.mindist/rmset.binsize)]));
@@ -692,81 +693,6 @@ function [ratemap,dwellmap,spikemap,rmset,speedlift] = rate_mapper(pos,spk,rmset
                     end
                 end  
                 rmset.radmap = single(radmap); % map of bin radii (mm)  
-              
-%             % >>>>>>>>>>>>>>>>>>>> K Nearest Neighbors                                              
-%             elseif strcmp(rmset.method,'knn')   
-%                                 
-%                 % fill in the ratemap values
-%                 ratemap = NaN(size(dwellmap),'double');
-%                 radmap = NaN(size(dwellmap),'double'); % map of bin radii (mm)  
-%                 d = NaN(size(dwellmap),'double');
-%                 s = NaN(size(dwellmap),'double');
-%                 
-%                 
-%                 tmap1 = smaps > rmset.ssigma;   
-%                 tmap2 = dmaps > rmset.ssigma;                   
-%                 for pp = 1:numel(dwellmap) % for every bin in the dwellmap
-%                     [i,j] = ind2sub(size(dwellmap),pp); % get its row column index 
-% 
-%                     % position data
-%                     if ~any(tmap2(i,j,:))
-%                         indx1 = size(tmap2,3);                                        
-%                     else
-%                         indx1 = find(tmap2(i,j,:),1,'first');                    
-%                     end
-%                     if (dmaps(i,j,indx1)*(1/rmset.srate)) < rmset.mindwell || isnan(dmaps(i,j,mindx)) % if the bin was unvisited according to min dwell duration
-%                         v2 = NaN; % set it to NaN regardless of its value                       
-%                     else
-% %                         v2 = rmset.ssigma ./ ( (pi*(kvect(indx1)+0.5).^2).*numel(pox) );
-%                         v2 = rmset.ssigma ./ ( karea(indx1).*numel(pox) );
-%                     end
-%                         
-%                     % spikes
-%                     if ~any(tmap1(i,j,:))
-%                         indx2 = size(tmap1,3);                                        
-%                     else
-%                         indx2 = find(tmap1(i,j,:),1,'first');                    
-%                     end
-%                     if (dmaps(i,j,indx1)*(1/rmset.srate)) < rmset.mindwell || isnan(dmaps(i,j,mindx)) % if the bin was unvisited according to min dwell duration
-%                         v1 = NaN; % set it to NaN regardless of its value                       
-%                     else
-%                         v1 = rmset.ssigma ./ ( karea(indx2).*numel(spx) );
-%                     end                    
-% 
-%                     
-%                     % rate
-%                     ratemap(i,j) = v1 ./ v2;
-%                     d(i,j) = v2;
-%                     s(i,j) = v1;
-%                     
-% %                     keyboard
-%                 end
-% figure
-% subplot(2,2,1)
-% plot(pox,poy,'k'); hold on;
-% plot(spx,spy,'r.','MarkerSize',20)
-% daspect([1 1 1])
-% axis xy
-% 
-% subplot(2,2,2)
-% imagesc(s)
-% daspect([1 1 1])
-% colorbar
-% axis xy
-%                 
-% subplot(2,2,3)
-% imagesc(d)
-% daspect([1 1 1])
-% colorbar
-% axis xy
-% 
-% subplot(2,2,4)
-% imagesc(ratemap)
-% daspect([1 1 1])
-% colorbar
-% axis xy
-% 
-% keyboard
             end
               
 %% >>>>>>>>>>>>>>>>>>>> Kernel smoothed density estimate (KSDE)                       
@@ -774,7 +700,7 @@ function [ratemap,dwellmap,spikemap,rmset,speedlift] = rate_mapper(pos,spk,rmset
 % This method uses a multivariate kernel density estimate approach to estimate probability density functions for the position data 
 % and spike data separately. The firing rate map is then calculated as the ratio of these two maps. Here smoothing is achieved using 
 % the bandwidth of the KDE 
-            
+
             % prepare bin centres
             [X1,Y1] = meshgrid(movmean(xvec,2,'EndPoints','discard'),movmean(yvec,2,'EndPoints','discard')); 
             xcen = X1(:);
@@ -1005,9 +931,6 @@ function [ratemap,dwellmap,spikemap,rmset,speedlift] = rate_mapper(pos,spk,rmset
                 
 %% >>>>>>>>>>>>>>>>>>>> Adaptive (kernel accelerated method)                                   
         case {'fyhn'}  
-% SIMPLE DESCRIPTION            
-
-
 % REF for original method
 % Fyhn et al (2004) Spatial Representation in the Entorhinal Cortex
 % https://doi.org/10.1126/science.1099901
@@ -1080,7 +1003,6 @@ function [ratemap,dwellmap,spikemap,rmset,speedlift] = rate_mapper(pos,spk,rmset
 
         otherwise
                 error(sprintf('Unknown mapping method {%s)... exiting',rmset.method));        
-
 
     end
 
