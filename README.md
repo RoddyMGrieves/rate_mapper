@@ -25,27 +25,26 @@ below) and a speedlift output which can be passed to a later iteration
 of rate_mapper to decrease computation time (see note 1 below)
 
 ## main input options include:
-'pos'           -   [Nx2] Numeric matrix, the position data x,y coordinates
-                    Units are in mm
+'pos' 
+  [Nx2] Numeric matrix, the position data x,y coordinates. Units are in mm
 
-'spk'           -   [Nx2] Numeric matrix, the spike data x,y coordinates
-                    Units are in mm
+'spk' 
+  [Nx2] Numeric matrix, the spike data x,y coordinates. Units are in mm
 
 ## rmset optional fields include:
-'method'        -   String or character vector or numeric scalar that
-                    specifies the mapping method to be used on position
-                    and spike data. 
+'method' 
+  String or character vector or numeric scalar that specifies the mapping method 
+  to be used on position and spike data. 
 
-                    'histogram'
-                    Spike and position data are binned seperately using
-                    the bivariate histogram method (histcounts2). 
-                    Smoothing is performed using imgaussfilt or nanconv
-                    depending on the value of rmset.smethod
+  Default value is 'histogram'.
+  
+  Spike and position data are binned seperately using the bivariate histogram 
+  method (histcounts2). Smoothing is performed using imgaussfilt or nanconv
+  depending on the value of rmset.smethod
 
-                    Default value is 'histogram'.
-
-'binsize'       -   Scalar, positive integer that specifies the pixel 
-                    or bin size to use for mapping, units are in mm.
+'binsize'
+  Scalar, positive integer that specifies the pixel or bin size to use for mapping.
+  Units are in mm.
 
                     Default value is 2mm.
 
